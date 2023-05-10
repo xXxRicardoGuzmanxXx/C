@@ -1,0 +1,72 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_NUMEROS 10
+#define MAX_LONGITUD 20
+
+void telefono(char **numeros, char **nuevas_cadenas, int n);
+void archivo(char **numeros, char **nuevas_cadenas, int n);
+
+int main() {
+    char **numeros, **nuevas_cadenas;
+    int n, i;
+
+    printf("Ingrese la cantidad de números telefónicos a convertir: ");
+    scanf("%d", &n);
+
+   
+    numeros = (char **) malloc(n * sizeof(char *));
+    nuevas_cadenas = (char **) malloc(n * sizeof(char *));
+
+    
+    for (i = 0; i < n; i++) {
+        numeros[i] = (char *) malloc(MAX_LONGITUD * sizeof(char));
+        nuevas_cadenas[i] = (char *) malloc(MAX_LONGITUD * sizeof(char));
+        printf("Ingrese el número telefónico #%d: ", i+1);
+        scanf("%s", numeros[i]);
+    }
+
+   
+telefono(numeros, nuevas_cadenas, n);
+
+   
+    archivo(numeros, nuevas_cadenas, n);
+
+  
+    for (i = 0; i < n; i++) {
+        free(numeros[i]);
+        free(nuevas_cadenas[i]);
+    }
+    free(numeros);
+    free(nuevas_cadenas);
+
+    return 0;
+}
+
+void telefono(char **numeros, char **nuevas_cadenas, int n) {
+    int i;
+    for (i = 0; i < n; i++) {
+        sprintf(nuevas_cadenas[i], "(%c%c)-%c-%s", numeros[i][0], numeros[i][1], numeros[i][2], &numeros[i][3]);
+    }
+}
+
+void archivo(char **numeros, char **nuevas_cadenas, int n) {
+    FILE *archivo;
+    int i;
+
+    archivo = fopen("numeros.txt", "w");
+
+    if (archivo == NULL) {
+        printf("No se pudo crear el archivo.\n");
+        return;
+    }
+
+    for (i = 0; i < n; i++) {
+        fprintf(archivo, "Número telefónico: %s\n", numeros[i]);
+        fprintf(archivo, "Nueva cadena: %s\n\n", nuevas_cadenas[i]);
+    }
+
+    fclose(archivo);
+    
+}
